@@ -1,0 +1,79 @@
+.in-game-menu-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 700px;
+}
+
+.game-logo {
+    width: 100px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 6px;
+}
+
+.restart-arrow {
+    width: 15px;
+    margin: 5px;
+}
+
+.restart-game, .game-score {
+    background-color: white;
+    border-radius: 6px;
+    width: 30%;
+    height: 60px;
+}
+
+.restart-game {
+    cursor: pointer;    
+}
+
+.restart, .score, .points {
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    font-weight: 600;
+    color: black;
+}
+
+@media only screen and (max-width: 425px) {
+    .in-game-menu-container {
+      width: 93% !important;
+    }
+
+    .restart, .score, .points {
+        font-size: 14px !important;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .in-game-menu-container {
+      width: 93% !important;
+    }
+  
+    .game-logo {
+      width: 80px !important;
+    }
+
+    .restart, .score, .points {
+        font-size: 14px !important;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    .in-game-menu-container {
+      width: 93% !important;
+      padding: 0 !important;
+    }
+  
+    .game-logo {
+      width: 80px !important;
+    }
+
+    .restart, .score, .points {
+        font-size: 14px !important;
+    }
+}
