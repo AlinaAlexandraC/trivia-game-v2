@@ -18,7 +18,8 @@
     margin: 5px;
 }
 
-.restart-game, .game-score {
+.restart-game,
+.game-score {
     background-color: white;
     border-radius: 6px;
     width: 30%;
@@ -26,10 +27,12 @@
 }
 
 .restart-game {
-    cursor: pointer;    
+    cursor: pointer;
 }
 
-.restart, .score, .points {
+.restart,
+.score,
+.points {
     font-size: 18px;
     display: flex;
     justify-content: center;
@@ -39,41 +42,30 @@
     color: black;
 }
 
-@media only screen and (max-width: 425px) {
+@media only screen and (max-width: 950px) {
     .in-game-menu-container {
-      width: 93% !important;
+        width: 93% !important;
     }
 
-    .restart, .score, .points {
+    .restart,
+    .score,
+    .points {
         font-size: 14px !important;
     }
 }
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 576px) {
     .in-game-menu-container {
-      width: 93% !important;
-    }
-  
-    .game-logo {
-      width: 80px !important;
+        width: 93% !important;
     }
 
-    .restart, .score, .points {
+    .restart,
+    .score,
+    .points {
         font-size: 14px !important;
     }
-}
 
-@media only screen and (max-width: 320px) {
-    .in-game-menu-container {
-      width: 93% !important;
-      padding: 0 !important;
-    }
-  
     .game-logo {
-      width: 80px !important;
-    }
-
-    .restart, .score, .points {
-        font-size: 14px !important;
+        width: 80px !important;
     }
 }

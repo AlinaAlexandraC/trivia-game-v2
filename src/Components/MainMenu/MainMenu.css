@@ -39,7 +39,6 @@
     text-align: center;
 }
 
-/* TODO: style this */
 option {
     background-color: #585757;
     font-size: 16px;
@@ -80,7 +79,7 @@ option {
     width: 700px;
   }
 
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 950px) {
     .main-menu-container {
         width: 400px !important;
     }    
@@ -90,7 +89,7 @@ option {
     }
 }
 
-@media only screen and (max-width: 375px) {
+@media only screen and (max-width: 576px) {
     .main-menu-container {
         width: 350px !important;
     }    
@@ -99,14 +98,3 @@ option {
         width: 350px;
     }
 }
-
-@media only screen and (max-width: 320px) {
-    .main-menu-container {
-        width: 295px !important;
-    }    
-    
-    .submit {
-        width: 295px;
-    }
-}
-

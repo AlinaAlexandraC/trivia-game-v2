@@ -62,21 +62,14 @@
   background-color: white;
 }
 
-@media only screen and (max-width: 425px) {
+@media only screen and (max-width: 950px) {
   .swal2-popup {
     width: 300px;
     font-size: 12px;
   }
 }
 
-@media only screen and (max-width: 375px) {
-  .swal2-popup {
-    width: 300px;
-    font-size: 12px;
-  }
-}
-
-@media only screen and (max-width: 320px) {
+@media only screen and (max-width: 576px) {
   .swal2-popup {
     width: 250px;
     font-size: 12px;

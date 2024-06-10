@@ -1,10 +1,7 @@
 import QuestionCard from "../Components/QuestionCard/QuestionCard";
-import { useState, useEffect } from 'react';
-import { fetchQuestions } from '../http/questions';
-import duck from '../assets/cxyduck.gif';
-import middleDuck from '../assets/rubber-duck1.gif';
-import sadDuck from '../assets/sad-cry.gif';
-import Swal from 'sweetalert2';
+import { useState, useEffect } from "react";
+import { fetchQuestions } from "../http/questions";
+
 import NoQuestionsAvailable from "./NoQuestionsAvailable";
 import QuestionsController from "../Components/QuestionsController/QuestionsController";
 
@@ -14,12 +11,7 @@ const TriviaGame = () => {
     const [index, setIndex] = useState(0);
     const [answersPool, setAnswersPool] = useState([]);
     const [score, setScore] = useState(0);
-    const feedbacks = [
-        "Oops! Looks like you didn't quite make it this time. Keep practicing and try again to reach that winning score!", // (for scores below 49)
-        "Great job! You're on the right track. With a bit more effort and focus, you'll be soaring towards victory in no time!", // (for scores between 50 and 79)
-        "Congratulations! You nailed it! Your score is over 80, which means you're a true quiz master! Keep up the great work!" // (for scores over 80)
-    ];
-    const apiUrl = localStorage.getItem('apiUrl');
+    const apiUrl = localStorage.getItem("apiUrl");
 
     function HTMLDecode(textString) {
         let doc = new DOMParser().parseFromString(textString, "text/html");
@@ -28,11 +20,11 @@ const TriviaGame = () => {
 
     const getQuestions = async () => {
         try {
-            const cachedIndex = localStorage.getItem('quizIndex');
+            const cachedIndex = localStorage.getItem("quizIndex");
             const initialIndex = cachedIndex ? parseInt(cachedIndex) : 0;
             setIndex(initialIndex);
 
-            const cachedQuestions = localStorage.getItem('cachedQuestions');
+            const cachedQuestions = localStorage.getItem("cachedQuestions");
 
             if (cachedQuestions) {
                 setQuestions(JSON.parse(cachedQuestions));
@@ -44,15 +36,15 @@ const TriviaGame = () => {
                     id: index + 1,
                     question: HTMLDecode(question.question),
                     correct_answer: question.correct_answer,
-                    incorrect_answers: question.incorrect_answers
+                    incorrect_answers: question.incorrect_answers,
                 }));
 
                 setQuestions(questionsInfo);
                 setLoading(false);
-                localStorage.setItem('cachedQuestions', JSON.stringify(questionsInfo));
+                localStorage.setItem("cachedQuestions", JSON.stringify(questionsInfo));
             }
         } catch (error) {
-            console.error('Error fetching questions:', error);
+            console.error("Error fetching questions:", error);
         }
     };
 
@@ -65,91 +57,56 @@ const TriviaGame = () => {
             const currentQuestion = questions[index];
             let answersPoolArray = [...currentQuestion.incorrect_answers];
             let correctAnswerPos = Math.floor(Math.random() * 4) + 1;
-            answersPoolArray.splice(correctAnswerPos - 1, 0, currentQuestion.correct_answer);
+            answersPoolArray.splice(
+                correctAnswerPos - 1,
+                0,
+                currentQuestion.correct_answer
+            );
             setAnswersPool(answersPoolArray);
         }
     }, [questions, index]);
-    // TODO: when an answer is selected, the correct answer will be in green and the incorrect answers should be in red
-    // TODO: next question should not be changed automatically, but only when next button is clicked
-    const handleAnswerSelection = (isCorrect) => {
-        let scoreProcentage = ((100 / questions.length) * score).toFixed(2);
-        if (index === questions.length - 1) {
-            if (scoreProcentage < 50) {
-                Swal.fire({
-                    title: `You mastered ${scoreProcentage} % of the quiz`,
-                    text: feedbacks[0],
-                    imageUrl: sadDuck,
-                    imageWidth: 200,
-                    imageAlt: "sad duck",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Play again?",
-                    cancelButtonText: 'Back to Main Menu',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        restartGame();
-                    } else if (
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        window.location.href = '/';
-                    }
-                });
-            } else if (scoreProcentage > 49 && scoreProcentage < 80) {
-                Swal.fire({
-                    title: `You mastered ${scoreProcentage} % of the quiz`,
-                    text: feedbacks[1],
-                    imageUrl: middleDuck,
-                    imageWidth: 200,
-                    imageAlt: "confident duck",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Play again?",
-                    cancelButtonText: 'Back to Main Menu',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        restartGame();
-                    } else if (
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        window.location.href = '/';
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: `You mastered ${scoreProcentage} % of the quiz`,
-                    text: feedbacks[2],
-                    imageUrl: duck,
-                    imageWidth: 200,
-                    imageAlt: "cool duck",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Play again?",
-                    cancelButtonText: 'Back to Main Menu',
-                    allowOutsideClick: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        restartGame();
-                    } else if (
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        window.location.href = '/';
-                    }
-                });
+
+    // TODO: find alternative to pointerEvents to keep the background white and no hover
+    // TODO: keep in localStorage the response for previous answers
+
+    const handleAnswerSelection = () => {
+        const answers = document.querySelectorAll(".answer");
+
+        answers.forEach((answer) => {
+            answer.addEventListener("click", selectAnswer);
+        });
+
+        function selectAnswer(event) {
+            const selectedAnswer = event.target;
+
+            if (selectedAnswer.classList.contains("correct-answer")) {
+                selectedAnswer.style.backgroundColor = "green";
+                setScore(score + 1);
+            } else if (selectedAnswer.classList.contains("incorrect-answer")) {
+                selectedAnswer.style.backgroundColor = "red";
             }
-        }
-        if (isCorrect) {
-            setScore(score + 1);
+
+            answers.forEach((answer) => {
+                answer.style.pointerEvents = "none";
+                answer.style.opacity = "0.5";
+
+                if (answer != selectedAnswer && selectedAnswer.classList.contains("incorrect-answer")) {
+                    if (answer.classList.contains("incorrect-answer")) {
+                        answer.style.border = "solid red 3px";                        
+                    } else {
+                        answer.style.border = "solid green 3px";
+                    }
+                }
+
+                answer.removeEventListener("click", selectAnswer);
+            });
         }
     };
 
     const restartGame = () => {
-        localStorage.removeItem('cachedQuestions');
-        localStorage.removeItem('quizIndex');
+        localStorage.removeItem("cachedQuestions");
+        localStorage.removeItem("quizIndex");
+        localStorage.removeItem("currentIndex");
         setLoading(true);
         getQuestions();
         setIndex(0);
@@ -164,12 +121,27 @@ const TriviaGame = () => {
                         <div className="loader"></div>
                     </div>
                 ) : (
-                    <div >
+                    <div>
                         <div>
                             {questions.length > 0 ? (
                                 <div>
-                                    <QuestionCard index={index} questions={questions} loading={loading} answersPool={answersPool} handleAnswerSelection={handleAnswerSelection} score={score} restartGame={restartGame} HTMLDecode={HTMLDecode} />
-                                    <QuestionsController index={index} questions={questions} setIndex={setIndex} />
+                                    <QuestionCard
+                                        index={index}
+                                        questions={questions}
+                                        loading={loading}
+                                        answersPool={answersPool}
+                                        handleAnswerSelection={handleAnswerSelection}
+                                        score={score}
+                                        restartGame={restartGame}
+                                        HTMLDecode={HTMLDecode}
+                                    />
+                                    <QuestionsController
+                                        index={index}
+                                        questions={questions}
+                                        setIndex={setIndex}
+                                        score={score}
+                                        restartGame={restartGame}
+                                    />
                                 </div>
                             ) : (
                                 <NoQuestionsAvailable />

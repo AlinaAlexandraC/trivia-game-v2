@@ -1,7 +1,6 @@
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './MainMenu.css';
 import { useState } from 'react';
-import TriviaGame from '../../Pages/TriviaGame';
 
 const MainMenu = () => {
     const navigate = useNavigate();
@@ -9,8 +8,6 @@ const MainMenu = () => {
     const [category, setCategory] = useState('');
     const [difficulty, setDifficulty] = useState('');
     const [amountError, setAmountError] = useState(false);
-    const [apiUrl, setApiUrl] = useState('');
-    const shouldRender = false;
 
     const categories = ['Any Category', 'General Knowledge', 'Entertainment: Books', 'Entertainment: Film', 'Entertainment: Music', 'Entertainment: Musicals & Theatres', 'Entertainment: Television', 'Entertainment: Video Games', 'Entertainment: Board Games', 'Science & Nature', 'Science: Computers', 'Science: Mathematics', 'Mythology', 'Sports', 'Geography', 'History', 'Politics', 'Art', 'Celebrities', 'Animals', 'Vehicles', 'Entertainment: Comics', 'Science: Gadgets', 'Entertainment: Japanese Anime & Manga', 'Entertainment: Cartoon & Animations'];
     const difficultyLevel = ['Difficulty', 'Easy', 'Medium', 'Hard'];
@@ -22,26 +19,32 @@ const MainMenu = () => {
         if (!amount) {
             setAmountError('Please select an amount');
             return;
+        } else if (Number(amount) > 50) {
+            setAmountError("Let's stick with less than 50 questions. Seems to be enough");
+            return;
         } else {
             navigate(`/question`);
         }
+        getGameSelection();
     };
 
     const getApiUrl = () => {
-        if ((category !== '' && category !== 'Any Category') && (difficulty !== '' && difficulty !== 'Difficulty')) {
-            setApiUrl(`https://opentdb.com/api.php?amount=${amount}&category=${categories.indexOf(category) + 8}&difficulty=${(difficulty).toLowerCase()}`);
+        if ((category !== '' && category !== 'Any Category') && (difficulty !== '' && difficulty !== 'Difficulty')) {            
             localStorage.setItem('apiUrl', `https://opentdb.com/api.php?amount=${amount}&category=${categories.indexOf(category) + 8}&difficulty=${(difficulty).toLowerCase()}`)
-        } else if ((category === '' || category === 'Any Category') && (difficulty !== '' && difficulty !== 'Difficulty')) {
-            setApiUrl(`https://opentdb.com/api.php?amount=${amount}&difficulty=${(difficulty).toLowerCase()}`);
+        } else if ((category === '' || category === 'Any Category') && (difficulty !== '' && difficulty !== 'Difficulty')) {            
             localStorage.setItem('apiUrl', `https://opentdb.com/api.php?amount=${amount}&difficulty=${(difficulty).toLowerCase()}`)
-        } else if ((category !== '' && category !== 'Any Category') && (difficulty === '' || difficulty === 'Difficulty')) {
-            setApiUrl(`https://opentdb.com/api.php?amount=${amount}&category=${categories.indexOf(category) + 8}`);
+        } else if ((category !== '' && category !== 'Any Category') && (difficulty === '' || difficulty === 'Difficulty')) {            
             localStorage.setItem('apiUrl', `https://opentdb.com/api.php?amount=${amount}&category=${categories.indexOf(category) + 8}`)
-        } else {
-            setApiUrl(`https://opentdb.com/api.php?amount=${amount}`);
+        } else {            
             localStorage.setItem('apiUrl', `https://opentdb.com/api.php?amount=${amount}`)
         }
     };
+
+    const getGameSelection = () => {
+        localStorage.setItem('amount', amount);
+        localStorage.setItem('category', category);
+        localStorage.setItem('difficulty', difficulty);
+    }
 
     return (
         <div className="main-menu-container d-flex flex-column justify-content-center align-items-center">
@@ -88,12 +91,6 @@ const MainMenu = () => {
                 </Link>
                 {amountError && <div className="error-label">{amountError}</div>}
             </div>
-            {/* TODO: API url should be taken from the handleStartGame function */}
-            {shouldRender && (
-                <div>
-                    <TriviaGame apiUrl={apiUrl} />
-                </div>
-            )}
         </div>
     );
 };
