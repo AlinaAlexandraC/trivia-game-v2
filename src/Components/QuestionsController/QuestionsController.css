@@ -28,6 +28,10 @@
   cursor: pointer;
 }
 
+.error-label {
+  width: 700px;
+}
+
 @media only screen and (max-width: 950px) {
   .questions-controller {
     width: 400px;

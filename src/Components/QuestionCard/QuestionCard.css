@@ -39,6 +39,16 @@
     background-color: rgb(196, 184, 241);
 }
 
+.gradient-green {
+    background: rgb(3, 143, 61);
+    background: linear-gradient(180deg, rgba(3, 143, 61, 0.7) 0%, rgba(99, 226, 47, 1) 50%, rgba(3, 143, 61, 0.7) 100%);
+}
+
+.gradient-red {
+    background: rgb(131, 58, 180);
+    background: linear-gradient(180deg, rgba(131, 58, 180, 0.7) 0%, rgba(253, 29, 29, 1) 50%, rgba(131, 58, 180, 0.7) 100%);
+}
+
 @media only screen and (max-width: 950px) {
     .question-card-container {
         width: 400px !important;

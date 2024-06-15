@@ -15,7 +15,7 @@
 
 .restart-arrow {
     width: 15px;
-    margin: 5px;
+    margin: 16px;
 }
 
 .restart-game,
@@ -37,7 +37,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px;
+    margin: 16px;
     font-weight: 600;
     color: black;
 }
@@ -63,6 +63,7 @@
     .score,
     .points {
         font-size: 14px !important;
+        padding: 5px;
     }
 
     .game-logo {

@@ -1,7 +1,6 @@
 import QuestionCard from "../Components/QuestionCard/QuestionCard";
 import { useState, useEffect } from "react";
 import { fetchQuestions } from "../http/questions";
-
 import NoQuestionsAvailable from "./NoQuestionsAvailable";
 import QuestionsController from "../Components/QuestionsController/QuestionsController";
 
@@ -11,12 +10,13 @@ const TriviaGame = () => {
     const [index, setIndex] = useState(0);
     const [answersPool, setAnswersPool] = useState([]);
     const [score, setScore] = useState(0);
+    const [selectedAnswers, setSelectedAnswers] = useState(Array(10).fill(null));
     const apiUrl = localStorage.getItem("apiUrl");
 
-    function HTMLDecode(textString) {
+    const HTMLDecode = (textString) => {
         let doc = new DOMParser().parseFromString(textString, "text/html");
         return doc.documentElement.textContent;
-    }
+    };
 
     const getQuestions = async () => {
         try {
@@ -25,9 +25,12 @@ const TriviaGame = () => {
             setIndex(initialIndex);
 
             const cachedQuestions = localStorage.getItem("cachedQuestions");
+            const cachedSelectedAnswers = localStorage.getItem("selectedAnswers");
 
             if (cachedQuestions) {
-                setQuestions(JSON.parse(cachedQuestions));
+                const parsedQuestions = JSON.parse(cachedQuestions);
+                setQuestions(parsedQuestions);
+                setSelectedAnswers(cachedSelectedAnswers ? JSON.parse(cachedSelectedAnswers) : Array(parsedQuestions.length).fill(null));
                 setLoading(false);
             } else {
                 const questionsData = await fetchQuestions(apiUrl);
@@ -40,6 +43,7 @@ const TriviaGame = () => {
                 }));
 
                 setQuestions(questionsInfo);
+                setSelectedAnswers(Array(questionsInfo.length).fill(null));
                 setLoading(false);
                 localStorage.setItem("cachedQuestions", JSON.stringify(questionsInfo));
             }
@@ -66,51 +70,27 @@ const TriviaGame = () => {
         }
     }, [questions, index]);
 
-    // TODO: find alternative to pointerEvents to keep the background white and no hover
-    // TODO: keep in localStorage the response for previous answers
+    const handleAnswerSelection = (selectedAnswer) => {
+        const newSelectedAnswers = [...selectedAnswers];
+        newSelectedAnswers[index] = selectedAnswer;
+        setSelectedAnswers(newSelectedAnswers);
 
-    const handleAnswerSelection = () => {
-        const answers = document.querySelectorAll(".answer");
-
-        answers.forEach((answer) => {
-            answer.addEventListener("click", selectAnswer);
-        });
-
-        function selectAnswer(event) {
-            const selectedAnswer = event.target;
-
-            if (selectedAnswer.classList.contains("correct-answer")) {
-                selectedAnswer.style.backgroundColor = "green";
-                setScore(score + 1);
-            } else if (selectedAnswer.classList.contains("incorrect-answer")) {
-                selectedAnswer.style.backgroundColor = "red";
-            }
-
-            answers.forEach((answer) => {
-                answer.style.pointerEvents = "none";
-                answer.style.opacity = "0.5";
-
-                if (answer != selectedAnswer && selectedAnswer.classList.contains("incorrect-answer")) {
-                    if (answer.classList.contains("incorrect-answer")) {
-                        answer.style.border = "solid red 3px";                        
-                    } else {
-                        answer.style.border = "solid green 3px";
-                    }
-                }
-
-                answer.removeEventListener("click", selectAnswer);
-            });
+        if (selectedAnswer === questions[index].correct_answer) {
+            setScore(score + 1);
         }
+
+        localStorage.setItem("selectedAnswers", JSON.stringify(newSelectedAnswers));
     };
 
     const restartGame = () => {
         localStorage.removeItem("cachedQuestions");
         localStorage.removeItem("quizIndex");
-        localStorage.removeItem("currentIndex");
+        localStorage.removeItem("selectedAnswers");
         setLoading(true);
         getQuestions();
         setIndex(0);
         setScore(0);
+        setSelectedAnswers(Array(questions.length).fill(null));
     };
 
     return (
@@ -134,6 +114,7 @@ const TriviaGame = () => {
                                         score={score}
                                         restartGame={restartGame}
                                         HTMLDecode={HTMLDecode}
+                                        selectedAnswer={selectedAnswers[index]}
                                     />
                                     <QuestionsController
                                         index={index}
@@ -141,6 +122,7 @@ const TriviaGame = () => {
                                         setIndex={setIndex}
                                         score={score}
                                         restartGame={restartGame}
+                                        selectedAnswers={selectedAnswers}
                                     />
                                 </div>
                             ) : (

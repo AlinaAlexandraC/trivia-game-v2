@@ -4,32 +4,36 @@ import middleDuck from '../../assets/rubber-duck1.gif';
 import sadDuck from '../../assets/sad-cry.gif';
 import Swal from 'sweetalert2';
 
-const QuestionsController = ({ index, setIndex, questions, score, restartGame }) => {
+const QuestionsController = ({ index, questions, score, restartGame, setIndex, selectedAnswers }) => {
     const feedbacks = [
         "Oops! Looks like you didn't quite make it this time. Keep practicing and try again to reach that winning score!", // (for scores below 49)
         "Great job! You're on the right track. With a bit more effort and focus, you'll be soaring towards victory in no time!", // (for scores between 50 and 79)
         "Congratulations! You nailed it! Your score is over 80, which means you're a true quiz master! Keep up the great work!" // (for scores over 80)
     ];
 
-    const getPreviousQuestion = () => {
+    const handlePrevious = () => {
         setIndex(index - 1);
+        localStorage.setItem('quizIndex', index - 1);
     };
 
-    const getNextQuestion = () => {
-        const answers = document.querySelectorAll('.answer');
-
-        answers.forEach(answer => {
-            answer.style.removeProperty('border');
-            answer.style.pointerEvents = "auto";
-            answer.style.opacity = "1";
-            answer.style.backgroundColor = "white";
-            answer.style.border = "auto";
-        });
-
+    const handleNext = () => {
         setIndex(index + 1);
+        localStorage.setItem('quizIndex', index + 1);
     };
 
     const endGame = () => {
+        const unansweredQuestions = selectedAnswers.filter(answer => answer === null);
+
+        if (unansweredQuestions.length > 0) {
+            Swal.fire("Complete all questions to end the game");
+            Swal.fire({
+                text: "Complete all questions to end the game",
+                icon: "warning",
+                allowOutsideClick: false
+              });
+            return;
+        }
+
         let scoreProcentage = ((100 / questions.length) * score).toFixed(2);
         if (index === questions.length - 1) {
             if (scoreProcentage < 50) {
@@ -104,10 +108,10 @@ const QuestionsController = ({ index, setIndex, questions, score, restartGame })
 
     return (
         <div className='questions-controller d-flex flex-row justify-content-around position-absolute bottom-0 mb-5'>
-            <button className='previous hero-btn btn mx-3 my-3' onClick={getPreviousQuestion} disabled={index === 0}>Previous</button>
+            <button className='previous hero-btn btn mx-3 my-3' onClick={handlePrevious} disabled={index === 0}>Previous</button>
             <div className="question-tracker mx-3 my-3">{`${index + 1} / ${questions.length}`}</div>
             {index < questions.length - 1 ? (
-                <button className="next hero-btn btn mx-3 my-3" onClick={getNextQuestion}>Next</button>
+                <button className="next hero-btn btn mx-3 my-3" onClick={handleNext}>Next</button>
             ) : (
                 <button className="end-game hero-btn btn mx-3 my-3" onClick={endGame}>End Game</button>
             )}
