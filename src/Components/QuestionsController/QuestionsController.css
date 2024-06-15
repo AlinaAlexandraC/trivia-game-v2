@@ -38,7 +38,8 @@
   }
 
   .previous,
-  .next {
+  .next,
+  .end-game {
     width: 33%;
   }
 }
@@ -49,7 +50,8 @@
   }
 
   .previous,
-  .next {
+  .next,
+  .end-game {
     width: 33%;
   }
 }

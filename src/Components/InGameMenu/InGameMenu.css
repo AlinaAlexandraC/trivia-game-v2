@@ -51,6 +51,7 @@
     .score,
     .points {
         font-size: 14px !important;
+        margin: 6px;
     }
 }
 
@@ -63,7 +64,11 @@
     .score,
     .points {
         font-size: 14px !important;
-        padding: 5px;
+        margin: 6px;
+    }
+
+    .restart-arrow {
+        margin: 6px;
     }
 
     .game-logo {
